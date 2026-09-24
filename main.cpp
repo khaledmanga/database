@@ -17,6 +17,7 @@ constexpr size_t TYPE_SIZE = 2;
 constexpr size_t NKEYS_SIZE = 2;
 constexpr size_t POINTER_SIZE = 8;
 constexpr size_t OFFSET_SIZE = 2;
+constexpr u64 INVALID_PAGE = UINT64_MAX;
 
 using Page = std::array<u8, PAGE_SIZE>;
 
@@ -223,20 +224,37 @@ private:
   }
 
 public:
-  explicit BPlusTree(Pager pager) : pager(std::move(pager)), rootPage(0) {}
+  explicit BPlusTree(Pager pager)
+      : pager(std::move(pager)), rootPage(INVALID_PAGE) {}
 
+  // TODO: Balance tree after inserting
   void insert(const std::vector<u8> &key, const std::vector<u8> &value) {
-    u64 page = rootPage;
-    BNode node = readNode(page);
+    u64 page;
+    BNode node;
+
+    if (rootPage == INVALID_PAGE) {
+      rootPage = pager.allocatePage();
+
+      page = rootPage;
+
+      node.type = BNodeType::Leaf;
+      node.nkeys = 0;
+    } else {
+      page = rootPage;
+      node = readNode(page);
+    }
 
     while (node.type == BNodeType::Internal) {
       size_t index = 0;
 
-      while (index < node.KVs.size() && !(key < node.KVs[index].key)) {
+      while (index < node.KVs.size() && !(key < node.KVs[index].key)
+
+      ) {
         ++index;
       }
 
       page = node.pointers[index];
+
       node = readNode(page);
     }
 
@@ -246,22 +264,20 @@ public:
       ++index;
     }
 
-    // When key is existed but doesn't have value
     if (index < node.KVs.size() && key == node.KVs[index].key) {
       node.KVs[index].value = value;
       writeNode(page, node);
       return;
     }
 
-    node.KVs.insert(node.KVs.begin() + index, KV{key, value}
-
-    );
+    node.KVs.insert(node.KVs.begin() + index, KV{key, value});
 
     node.nkeys++;
 
     writeNode(page, node);
   }
 
+  // TODO: Balance tree after updating
   void update(const std::vector<u8> &key, const std::vector<u8> &value) {
     u64 page = rootPage;
     BNode node = readNode(page);
@@ -290,11 +306,41 @@ public:
     }
   }
 
-  void remove(const BNode &node);
+  /**
+   * TODO:
+   * 1. Balance tree after removing
+   * 2. Handle empty node after removing
+   */
+  void remove(const std::vector<u8> &key) {
+    u64 page = rootPage;
+    BNode node = readNode(page);
 
-  std::optional<BNode> search(const std::vector<u8> &key
+    while (node.type == BNodeType::Internal) {
+      size_t index = 0;
 
-  ) {
+      while (index < node.KVs.size() && !(key < node.KVs[index].key)) {
+        ++index;
+      }
+
+      page = node.pointers[index];
+      node = readNode(page);
+    }
+
+    size_t index = 0;
+
+    while (index < node.KVs.size() && key < node.KVs[index].key) {
+      ++index;
+    }
+
+    if (index < node.KVs.size() && key == node.KVs[index].key) {
+      node.KVs.erase(node.KVs.begin() + index);
+      node.nkeys--;
+      writeNode(page, node);
+      return;
+    }
+  }
+
+  std::optional<BNode> search(const std::vector<u8> &key) {
     BNode node = readNode(rootPage);
 
     while (node.type == BNodeType::Internal) {
