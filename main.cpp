@@ -233,6 +233,7 @@ class BPlusTree {
 private:
   u64 rootPage;
   Pager pager;
+  int capacity;
 
   BNode readNode(u64 pageNumber) {
     Page page = pager.readPage(pageNumber);
@@ -245,8 +246,8 @@ private:
   }
 
 public:
-  explicit BPlusTree(Pager pager)
-      : pager(std::move(pager)), rootPage(INVALID_PAGE) {}
+  explicit BPlusTree(Pager pager, int capacity_)
+      : pager(std::move(pager)), rootPage(INVALID_PAGE), capacity(capacity_) {}
 
   // TODO: Balance tree after inserting
   void insert(const std::vector<u8> &key, const std::vector<u8> &value) {
@@ -277,6 +278,8 @@ public:
       node = readNode(page);
     }
 
+    BNode parent = node;
+
     size_t index = 0;
 
     while (index < node.KVs.size() && key < node.KVs[index].key) {
@@ -295,8 +298,44 @@ public:
     node.KVs.insert(node.KVs.begin() + index, KV{key, value});
 
     node.nkeys++;
+    
+    if(nkeys < this->capacity) {
+      writeNode(page, node);
+    } 
+
+    // Case 1: if only leaf and leaf is full
+    
+    newPage = this->pager.allocatePage();
+    BNode newNode;
+    newNode.type = BNodeType::Leaf;
+    
+    int mid = nkeys / 2;
+
+    BNode.KVs.insert(
+      newNode.begin(),
+      node.KVs.begin() + mid,
+      node.KVs.end()
+    )
+
+    node.KVs.erase(
+      node.KVs.begin() + mid,
+      node.KVs.end()
+    )
+
+    node.nkeys -= mid;
+    newNode.nkeys = nkeys - mid;
 
     writeNode(page, node);
+    writeNode(newPage, newNode);
+
+    KV separator = newNode.KVs[0];
+
+    BNode newRoot;
+    newRoot.type = BNodeType::Internal;
+    newRoot.nkeys = 1;
+    newRoot.KVs.push_back(separator);
+    newRoot.pointers.push_back(page);
+    newRoot.pointers.push_back(newPage);
   }
 
   // TODO: Balance tree after updating
