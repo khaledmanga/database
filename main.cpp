@@ -5,11 +5,14 @@
 
 #include <optional>
 #include <string>
+
 #include <vector>
 
 using u8 = std::uint8_t;
 using u16 = std::uint16_t;
+
 using u32 = std::uint32_t;
+
 using u64 = std::uint64_t;
 
 constexpr size_t PAGE_SIZE = 4096;
@@ -45,6 +48,13 @@ public:
   explicit Pager(const std::string &filename)
       : file(filename, std::ios::in | std::ios::out | std::ios::binary) {
     if (!file.is_open()) {
+      file.clear();
+
+      file.open(filename, std::ios::in | std::ios::out | std::ios::binary |
+                              std::ios::trunc);
+    }
+
+    if (!file.is_open()) {
       throw std::runtime_error("Failed to open database");
     }
   }
@@ -63,13 +73,16 @@ public:
   void writePage(u64 pageNumber, const Page &page) {
     std::streamoff offset = static_cast<std::streamoff>(pageNumber) * PAGE_SIZE;
 
+    file.clear();
     file.seekp(offset, std::ios::beg);
+
     file.write(reinterpret_cast<const char *>(page.data()), PAGE_SIZE);
 
     file.flush();
   }
 
   u64 allocatePage() {
+    file.clear();
     file.seekg(0, std::ios::end);
 
     const std::streamoff size = file.tellg();
@@ -92,9 +105,12 @@ Page encode(const BNode &node) {
   page[pageIndex++] = nkeys & 0xff;
   page[pageIndex++] = (nkeys >> 8) & 0xff;
 
-  for (u64 ptr : node.pointers) {
-    for (size_t j = 0; j < 8; ++j) {
-      page[pageIndex++] = static_cast<u8>((ptr >> (8 * j)) & 0xff);
+  if (node.type == BNodeType::Internal) {
+    for (u64 ptr : node.pointers) {
+      for (size_t j = 0; j < 8; ++j) {
+
+        page[pageIndex++] = static_cast<u8>((ptr >> (8 * j)) & 0xff);
+      }
     }
   }
 
@@ -119,6 +135,7 @@ Page encode(const BNode &node) {
     }
 
     for (u8 byte : kv.value) {
+
       page[pageIndex++] = byte;
     }
   }
@@ -131,10 +148,8 @@ BNode decode(const Page &page) {
 
   size_t pageIndex = 0;
 
-  u16 type =
-
-      static_cast<u16>(page[pageIndex]) |
-      (static_cast<u16>(page[pageIndex + 1]) << 8);
+  u16 type = static_cast<u16>(page[pageIndex]) |
+             (static_cast<u16>(page[pageIndex + 1]) << 8);
 
   node.type = static_cast<BNodeType>(type);
   pageIndex += 2;
@@ -144,17 +159,19 @@ BNode decode(const Page &page) {
 
   pageIndex += 2;
 
-  for (size_t i = 0; i < node.nkeys; ++i) {
-    u64 ptr = 0;
+  if (node.type == BNodeType::Internal) {
+    for (size_t i = 0; i < node.nkeys + 1; ++i) {
+      u64 ptr = 0;
 
-    for (size_t j = 0; j < 8; ++j) {
-      ptr |= static_cast<u64>(page[pageIndex++]) << (8 * j);
+      for (size_t j = 0; j < 8; ++j) {
+        ptr |= static_cast<u64>(page[pageIndex++]) << (8 * j);
+      }
+
+      node.pointers.push_back(ptr);
     }
-
-    node.pointers.push_back(ptr);
   }
 
-  for (size_t i = 0; i < node.nkeys; ++i) {
+  for (size_t i = 0; i < node.offsets.size(); ++i) {
     u16 offset = static_cast<u16>(page[pageIndex]) |
                  (static_cast<u16>(page[pageIndex + 1]) << 8);
 
@@ -182,7 +199,10 @@ BNode decode(const Page &page) {
 
     pageIndex += keySize;
 
-    kv.value.insert(kv.value.end(), page.begin() + pageIndex,
+    kv.value.insert(kv.value.end(),
+
+                    page.begin() + pageIndex,
+
                     page.begin() + pageIndex + valueSize);
 
     pageIndex += valueSize;
@@ -200,6 +220,8 @@ size_t nodeSize(const BNode &node) {
   size += node.offsets.size() * OFFSET_SIZE;
 
   for (const auto &kv : node.KVs) {
+    size += 2;
+    size += 2;
     size += kv.key.size();
     size += kv.value.size();
   }
@@ -208,7 +230,6 @@ size_t nodeSize(const BNode &node) {
 }
 
 class BPlusTree {
-
 private:
   u64 rootPage;
   Pager pager;
@@ -247,9 +268,7 @@ public:
     while (node.type == BNodeType::Internal) {
       size_t index = 0;
 
-      while (index < node.KVs.size() && !(key < node.KVs[index].key)
-
-      ) {
+      while (index < node.KVs.size() && !(key < node.KVs[index].key)) {
         ++index;
       }
 
@@ -264,9 +283,12 @@ public:
       ++index;
     }
 
+    // When key is existed but doesn't have value
     if (index < node.KVs.size() && key == node.KVs[index].key) {
       node.KVs[index].value = value;
+
       writeNode(page, node);
+
       return;
     }
 
@@ -279,6 +301,10 @@ public:
 
   // TODO: Balance tree after updating
   void update(const std::vector<u8> &key, const std::vector<u8> &value) {
+    if (rootPage == INVALID_PAGE) {
+      return;
+    }
+
     u64 page = rootPage;
     BNode node = readNode(page);
 
@@ -301,7 +327,9 @@ public:
 
     if (index < node.KVs.size() && key == node.KVs[index].key) {
       node.KVs[index].value = value;
+
       writeNode(page, node);
+
       return;
     }
   }
@@ -312,6 +340,10 @@ public:
    * 2. Handle empty node after removing
    */
   void remove(const std::vector<u8> &key) {
+    if (rootPage == INVALID_PAGE) {
+      return;
+    }
+
     u64 page = rootPage;
     BNode node = readNode(page);
 
@@ -334,13 +366,20 @@ public:
 
     if (index < node.KVs.size() && key == node.KVs[index].key) {
       node.KVs.erase(node.KVs.begin() + index);
+
       node.nkeys--;
+
       writeNode(page, node);
+
       return;
     }
   }
 
   std::optional<BNode> search(const std::vector<u8> &key) {
+    if (rootPage == INVALID_PAGE) {
+      return std::nullopt;
+    }
+
     BNode node = readNode(rootPage);
 
     while (node.type == BNodeType::Internal) {
@@ -359,4 +398,6 @@ public:
   }
 };
 
-int main() { return 0; }
+int main() {
+  return 0;
+}
