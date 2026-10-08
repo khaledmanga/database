@@ -1,17 +1,18 @@
 #include "bplustree/b_plus_tree.h"
-#include "storage/page.h"
 #include "storage/file_manager.h"
+#include "storage/page.h"
+#include "storage/metadata.h"
 
 int main() {
-	FileManager::open("database.db");
+    FileManager file("database.db");
+    Pager pager(file);
+    Metadata metadata;
 
-	BPlusTree tree;
+    Page page = metadata.encode();
 
-	Page page = tree.encode();
+    pager.writePage(metadata.getRootPageId(), page);
 
-	FileManager::write(0, page.data.data(), PAGE_SIZE);
+    file.sync();
 
-	FileManager::close();
-
-	return 0;
+    return 0;
 }

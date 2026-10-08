@@ -1,27 +1,27 @@
 #include "file_manager.h"
 
-std::fstream FileManager::fileStream;
+FileManager::FileManager(const std::string &path) { this->fd = open(path.c_str(), O_RDWR | O_CREAT, 0644); }
 
-FileManager::~FileManager() {
-	this->close();
+FileManager::~FileManager() { close(this->fd); }
+
+void FileManager::read(std::uint64_t offset, void *buffer, std::size_t size) {
+  std::size_t total = 0;
+
+  while (total < size) {
+    ssize_t n = pread(this->fd, (char *)(buffer) + total, size - total, offset + total);
+
+    total += n;
+  }
 }
 
-void FileManager::close() {
-	fileStream.close();
+void FileManager::write(std::uint64_t offset, const void *buffer, std::size_t size) {
+  std::size_t total = 0;
+
+  while (total < size) {
+    ssize_t n = pwrite(this->fd, (const char *)(buffer) + total, size - total, offset + total);
+
+    total += n;
+  }
 }
 
-void FileManager::open(const string* file_path) {
-	fileStream.open(file_path, std::ios::out | std::ios::app);
-}
-
-void FileManager::read(int offset, void* buffer, size_t size) {
-	fileStream.seekg(offset, std::ios::beg);
-
-	fileStream.read((char*)buffer, size);
-}
-
-void FileManager::write(int offset, const void* buffer, size_t size){
-	fileStream.seekg(offset);
-
-	fileStream.write((const char*)buffer, size);
-}
+void FileManager::sync() { fsync(this->fd); }

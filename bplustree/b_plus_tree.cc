@@ -1,7 +1,7 @@
 #include "b_plus_tree.h"
 
 Page BPlusTree::encode() {
-  Page page;
+  Page page{};
   int offset = 0;
 
   page[offset++] = (u8)(this->type & 0xFF);

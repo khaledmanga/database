@@ -6,20 +6,20 @@
 #include "../common/common.h"
 
 class KV {
-  private:
+  public:
     std::vector<u16> key;
     std::vector<u16> value;
 };
 
 class BPlusTree {
   private:
-    u16 type;
-    u16 nkeys;
+    u16 type{};
+    u16 nkeys{};
     std::vector<u64> pointers;
     std::vector<u16> offsets;
     std::vector<KV> KVs;
 
   public:
     Page encode();
-    BPlusTree decode();
+    BPlusTree decode(const Page &page);
 };

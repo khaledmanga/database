@@ -1,2 +1,2 @@
 format:
-	clang-format -i storage/*.cc
+	clang-format -i storage/*.cc bplustree/*.cc common/*h

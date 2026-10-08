@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/khaledmanga/repo/database
+CMAKE_SOURCE_DIR = /home/KyoAni/repo/database
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/khaledmanga/repo/database/build
+CMAKE_BINARY_DIR = /home/KyoAni/repo/database/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/khaledmanga/repo/database/build/CMakeFiles /home/khaledmanga/repo/database/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/KyoAni/repo/database/build/CMakeFiles /home/KyoAni/repo/database/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/khaledmanga/repo/database/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/KyoAni/repo/database/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -153,6 +153,30 @@ bplustree/b_plus_tree.cc.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/bplustree/b_plus_tree.cc.s
 .PHONY : bplustree/b_plus_tree.cc.s
 
+main.o: main.cpp.o
+.PHONY : main.o
+
+# target to build an object file
+main.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/main.cpp.o
+.PHONY : main.cpp.o
+
+main.i: main.cpp.i
+.PHONY : main.i
+
+# target to preprocess a source file
+main.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/main.cpp.i
+.PHONY : main.cpp.i
+
+main.s: main.cpp.s
+.PHONY : main.s
+
+# target to generate assembly for a file
+main.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/main.cpp.s
+.PHONY : main.cpp.s
+
 storage/file_manager.o: storage/file_manager.cc.o
 .PHONY : storage/file_manager.o
 
@@ -176,6 +200,30 @@ storage/file_manager.s: storage/file_manager.cc.s
 storage/file_manager.cc.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/storage/file_manager.cc.s
 .PHONY : storage/file_manager.cc.s
+
+storage/metadata.o: storage/metadata.cc.o
+.PHONY : storage/metadata.o
+
+# target to build an object file
+storage/metadata.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/storage/metadata.cc.o
+.PHONY : storage/metadata.cc.o
+
+storage/metadata.i: storage/metadata.cc.i
+.PHONY : storage/metadata.i
+
+# target to preprocess a source file
+storage/metadata.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/storage/metadata.cc.i
+.PHONY : storage/metadata.cc.i
+
+storage/metadata.s: storage/metadata.cc.s
+.PHONY : storage/metadata.s
+
+# target to generate assembly for a file
+storage/metadata.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/storage/metadata.cc.s
+.PHONY : storage/metadata.cc.s
 
 storage/page.o: storage/page.cc.o
 .PHONY : storage/page.o
@@ -213,9 +261,15 @@ help:
 	@echo "... bplustree/b_plus_tree.o"
 	@echo "... bplustree/b_plus_tree.i"
 	@echo "... bplustree/b_plus_tree.s"
+	@echo "... main.o"
+	@echo "... main.i"
+	@echo "... main.s"
 	@echo "... storage/file_manager.o"
 	@echo "... storage/file_manager.i"
 	@echo "... storage/file_manager.s"
+	@echo "... storage/metadata.o"
+	@echo "... storage/metadata.i"
+	@echo "... storage/metadata.s"
 	@echo "... storage/page.o"
 	@echo "... storage/page.i"
 	@echo "... storage/page.s"

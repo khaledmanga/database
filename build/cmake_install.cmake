@@ -1,4 +1,4 @@
-# Install script for directory: /home/khaledmanga/repo/database
+# Install script for directory: /home/KyoAni/repo/database
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,7 +45,7 @@ endif()
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
 if(CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/home/khaledmanga/repo/database/build/install_local_manifest.txt"
+  file(WRITE "/home/KyoAni/repo/database/build/install_local_manifest.txt"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()
 if(CMAKE_INSTALL_COMPONENT)
@@ -61,6 +61,6 @@ else()
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  file(WRITE "/home/khaledmanga/repo/database/build/${CMAKE_INSTALL_MANIFEST}"
+  file(WRITE "/home/KyoAni/repo/database/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()
