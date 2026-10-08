@@ -7,15 +7,15 @@
 
 class KV {
   private:
-    u16 key;
-    u16 value;
+    std::vector<u16> key;
+    std::vector<u16> value;
 };
 
 class BPlusTree {
   private:
     u16 type;
     u16 nkeys;
-    std::vector<u64> pointer;
+    std::vector<u64> pointers;
     std::vector<u16> offsets;
     std::vector<KV> KVs;
 
