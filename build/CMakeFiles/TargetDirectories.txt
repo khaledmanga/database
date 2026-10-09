@@ -1,3 +1,0 @@
-/home/khaledmanga/repo/database/build/CMakeFiles/database.dir
-/home/khaledmanga/repo/database/build/CMakeFiles/edit_cache.dir
-/home/khaledmanga/repo/database/build/CMakeFiles/rebuild_cache.dir
