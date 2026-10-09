@@ -13,4 +13,6 @@ add_executable(
     storage/page.cc
     storage/metadata.cc
     operators/tree.cc
+    query/lexer.cc
+    utils/common.cc
 )
