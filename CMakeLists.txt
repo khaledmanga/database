@@ -12,4 +12,5 @@ add_executable(
     storage/file_manager.cc
     storage/page.cc
     storage/metadata.cc
+    operators/tree.cc
 )

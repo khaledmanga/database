@@ -57,10 +57,10 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/KyoAni/repo/database
+CMAKE_SOURCE_DIR = /home/khaledmanga/repo/database
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/KyoAni/repo/database/build
+CMAKE_BINARY_DIR = /home/khaledmanga/repo/database/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -87,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/KyoAni/repo/database/build/CMakeFiles /home/KyoAni/repo/database/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/khaledmanga/repo/database/build/CMakeFiles /home/khaledmanga/repo/database/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/KyoAni/repo/database/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/khaledmanga/repo/database/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -176,6 +176,30 @@ main.s: main.cpp.s
 main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/main.cpp.s
 .PHONY : main.cpp.s
+
+operators/tree.o: operators/tree.cc.o
+.PHONY : operators/tree.o
+
+# target to build an object file
+operators/tree.cc.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/operators/tree.cc.o
+.PHONY : operators/tree.cc.o
+
+operators/tree.i: operators/tree.cc.i
+.PHONY : operators/tree.i
+
+# target to preprocess a source file
+operators/tree.cc.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/operators/tree.cc.i
+.PHONY : operators/tree.cc.i
+
+operators/tree.s: operators/tree.cc.s
+.PHONY : operators/tree.s
+
+# target to generate assembly for a file
+operators/tree.cc.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/database.dir/build.make CMakeFiles/database.dir/operators/tree.cc.s
+.PHONY : operators/tree.cc.s
 
 storage/file_manager.o: storage/file_manager.cc.o
 .PHONY : storage/file_manager.o
@@ -264,6 +288,9 @@ help:
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
+	@echo "... operators/tree.o"
+	@echo "... operators/tree.i"
+	@echo "... operators/tree.s"
 	@echo "... storage/file_manager.o"
 	@echo "... storage/file_manager.i"
 	@echo "... storage/file_manager.s"

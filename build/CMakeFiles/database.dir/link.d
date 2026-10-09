@@ -7,6 +7,7 @@ database: \
   CMakeFiles/database.dir/storage/file_manager.cc.o \
   CMakeFiles/database.dir/storage/page.cc.o \
   CMakeFiles/database.dir/storage/metadata.cc.o \
+  CMakeFiles/database.dir/operators/tree.cc.o \
   /usr/lib/gcc/x86_64-linux-gnu/14/libstdc++.so \
   /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/libm.so \
   /usr/lib/gcc/x86_64-linux-gnu/14/../../../x86_64-linux-gnu/libm.so \
@@ -51,6 +52,8 @@ CMakeFiles/database.dir/storage/file_manager.cc.o:
 CMakeFiles/database.dir/storage/page.cc.o:
 
 CMakeFiles/database.dir/storage/metadata.cc.o:
+
+CMakeFiles/database.dir/operators/tree.cc.o:
 
 /usr/lib/gcc/x86_64-linux-gnu/14/libstdc++.so:
 

@@ -4,6 +4,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/database.dir/bplustree/b_plus_tree.cc.o.d"
   "CMakeFiles/database.dir/main.cpp.o"
   "CMakeFiles/database.dir/main.cpp.o.d"
+  "CMakeFiles/database.dir/operators/tree.cc.o"
+  "CMakeFiles/database.dir/operators/tree.cc.o.d"
   "CMakeFiles/database.dir/storage/file_manager.cc.o"
   "CMakeFiles/database.dir/storage/file_manager.cc.o.d"
   "CMakeFiles/database.dir/storage/metadata.cc.o"

@@ -54,8 +54,11 @@ BPlusTree BPlusTree::decode(const Page &page) {
 
   bpt.nkeys = (u16)page[offset] | (u16)page[offset + 1] << 8;
   offset += 2;
+  bpt.typeNode = (NodeType)(bpt.type);
 
-  for (u16 i = 0; i < bpt.nkeys; ++i) {
+  const u16 pointer_count = bpt.typeNode == NodeType::ROOT || bpt.typeNode == NodeType::INTERNAL ? bpt.nkeys + 1 : 0;
+
+  for (u16 i = 0; i < pointer_count; ++i) {
     u64 pointer = 0;
 
     for (int j = 0; j < 8; ++j) {
@@ -100,4 +103,16 @@ BPlusTree BPlusTree::decode(const Page &page) {
   }
 
   return bpt;
+}
+
+void BPlusTree::update_offset() {
+  offsets.clear();
+
+  u16 offset = (u16)(4 + pointers.size() * 8 + KVs.size() * 2);
+
+  for (const KV &kv : KVs) {
+    offsets.push_back(offset);
+
+    offset += (u16)(4 + kv.key.size() * 2 + kv.value.size() * 2);
+  }
 }

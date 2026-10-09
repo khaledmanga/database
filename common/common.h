@@ -13,3 +13,9 @@ using u64 = std::uint64_t;
 constexpr u16 PAGE_SIZE = 4096;
 constexpr u8 VERSION = 1;
 using Page = std::array<u8, PAGE_SIZE>;
+
+enum class NodeType {
+  LEAF,
+  INTERNAL,
+  ROOT,
+};
