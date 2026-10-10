@@ -6,7 +6,8 @@ Lexer::Lexer(const std::string &input) {
   this->pointer = 0;
 }
 
-std::vector<Token> Lexer::tokenize() {
+// INSERT INTO table (column 1, column 2, ...) VALUES (value 1, value 2, value 3)
+std::vector<Token> Lexer::tokenize_insert() {
   std::vector<Token> tokens;
   size_t size_input = this->input.size();
 

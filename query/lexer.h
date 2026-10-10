@@ -3,17 +3,17 @@
 #include "../utils/common.h"
 #include "token.h"
 
+#include <cctype>
 #include <string>
 #include <vector>
-#include <cctype>
 
 class Lexer {
 public:
   Lexer(const std::string &input);
 
-  std::vector<Token> tokenize();
+  std::vector<Token> tokenize_insert();
 
 private:
-  const std::string &input;
+  std::string input;
   size_t pointer;
 };

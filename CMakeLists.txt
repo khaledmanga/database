@@ -14,5 +14,9 @@ add_executable(
     storage/metadata.cc
     operators/tree.cc
     query/lexer.cc
+    query/parser.cc
+    query/binder.cc
+    query/schema.cc
+    query/catalog.cc
     utils/common.cc
 )

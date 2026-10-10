@@ -1,38 +1,30 @@
+
+#include <iostream>
+#include <string>
+
 #include "bplustree/b_plus_tree.h"
 #include "storage/file_manager.h"
 #include "storage/page.h"
 #include "storage/metadata.h"
+#include "query/lexer.h"
+#include "query/parser.h"
+#include "query/binder.h"
+#include "query/catalog.h"
 #include "operators/tree.h"
+#include "query/token.h"
 
 int main() {
-    FileManager file("database.db");
+    std::string command_line;
 
-    Pager pager(file);
+    std::getline(std::cin, command_line);
 
-    Metadata metadata;
+    Catalog catalog;
+    Lexer lexer(command_line);
+    std::vector<Token> tokens = lexer.tokenize_insert();
+    Parser parser(tokens);
+    Binder binder(catalog);
 
-    pager.writePage(0, metadata.encode());
-
-    BPlusTree bpt;
-    bpt.typeNode = NodeType::LEAF;
-    bpt.type = (u16)(NodeType::LEAF);
-    bpt.nkeys = 0;
-
-    pager.writePage(metadata.getNextPageId(), bpt.encode());
-
-    metadata.update_metadata(pager);
-
-    KV kv{{'a'}, {'1'}};
-
-    metadata.update_metadata(pager);
-
-    insert(kv, pager);
-
-    std::optional<BPlusTree> a = search(kv, pager);
-
-    std::cout << (char)a->KVs[0].key[0];
-
-    file.sync();
+    std::cout << binder.verify(parser.parse());
 
     return 0;
 }

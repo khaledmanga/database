@@ -1,10 +1,19 @@
 #pragma once
 
-#include <cstring>
+#include <string>
 #include <vector>
 
-class InsertStatement {
+#include <string>
+#include <vector>
+
+class Statement  {
+public:
     std::string table;
     std::vector<std::string> columns;
     std::vector<std::string> values;
-}
+};
+
+
+class InsertStatement: public Statement {
+
+};
