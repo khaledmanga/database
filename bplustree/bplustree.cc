@@ -120,7 +120,8 @@ void BPlusTree::update_offset() {
   this->offset.resize(this->nkeys);
   this->offset[0] = 4 + this->pointers.size() * 8 + this->nkeys * 4;
 
-  for(int i = 1; i < this->nkeys; ++i) {
-    this->offset[i] = this->offset[i - 1] + 4 + this->KVs[i - 1].key.size() + this->KVs[i - 1].value.size();
+  for (int i = 1; i < this->nkeys; ++i) {
+    this->offset[i] = this->offset[i - 1] + 4 + this->KVs[i - 1].key.size() +
+                      this->KVs[i - 1].value.size();
   }
 }

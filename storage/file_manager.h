@@ -1,13 +1,20 @@
 #pragma once
 
-class FileManager {
-    public:
-        FileManager();
-        ~FileManager();
-        int file_fd;
-        static FileManager *instance;
+#include <fcntl.h>
+#include <unistd.h>
 
-        static FileManager getInstance();
-        void readFile(void* data, size_t size);
-        void writeFile(const void* data, size_t size);
-}
+class FileManager {
+private:
+  int file_fd;
+  FileManager();
+
+public:
+  FileManager(const FileManager &) = delete;
+  FileManager &operator=(const FileManager &) = delete;
+  ~FileManager();
+  static FileManager *instance = nullptr;
+
+  static FileManager *getInstance();
+  void readFile(void *data, size_t size);
+  void writeFile(const void *data, size_t size);
+};
