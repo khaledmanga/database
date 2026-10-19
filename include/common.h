@@ -1,12 +1,15 @@
 #pragma once
 
-#define uint8 u8
-#define uint16 u16
-#define uint32 u32
-#define uint64 u64
+#include <vector>
+#include <stdint.h>
 
-const PAGE_SIZE;
-using Page = std::vector<u8, PAGE_SIZE>;
+#define u8 uint8_t
+#define u16 uint16_t
+#define u32 uint32_t
+#define u64 uint64_t
+
+const int PAGE_SIZE = 4096;
+using Page = std::vector<u8>;
 
 enum class BNodeType {
   ROOT,

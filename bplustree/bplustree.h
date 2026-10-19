@@ -4,13 +4,14 @@
 #include <vector>
 
 class KV {
-  std::vector<u16> key;
-  std::vector<u16> value;
-}
+  public:
+    std::vector<u16> key;
+    std::vector<u16> value;
+};
 
-class BPLusTree {
+class BPlusTree {
 private:
-  u16 type;
+  u16 types;
   u16 nkeys;
   std::vector<u64> pointers;
   std::vector<u16> offset;
@@ -18,6 +19,6 @@ private:
 
 public:
   Page encode();
-  BPlusTree decode(Page page);
+  void decode(const Page &page);
   void update_offset();
 };

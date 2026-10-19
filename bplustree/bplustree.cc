@@ -46,7 +46,7 @@ Page BPlusTree::encode() {
   return page;
 }
 
-BPlusTree BPlusTree::decode(const Page &page) {
+void BPlusTree::decode(const Page &page) {
   int offset = 0;
 
   this->types = ((u16)(page[offset + 1]) << 8) | (u16)page[offset];
@@ -56,7 +56,7 @@ BPlusTree BPlusTree::decode(const Page &page) {
   offset += 2;
 
   size_t ptr_nums = 0;
-  if ((BNodeType)this.types != BNodeType::LEAF) {
+  if ((BNodeType)this->types != BNodeType::LEAF) {
     ptr_nums = this->nkeys + 1;
   }
 
@@ -71,7 +71,7 @@ BPlusTree BPlusTree::decode(const Page &page) {
     ptr |= (u64)page[offset + 5] << 16;
     ptr |= (u64)page[offset + 6] << 8;
     ptr |= (u64)page[offset + 7];
-    this->pointer.push_back(ptr);
+    this->pointers.push_back(ptr);
 
     offset += 8;
   }
