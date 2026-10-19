@@ -23,3 +23,21 @@ void FileManager::read(void *data, size_t size) {
     read(this->file_fd, (char *)data, size);
   }
 }
+
+Page FileManager::readPage(u32 id) {
+  Page page{};
+
+  ssize_t bytes_read =
+      pread(this->file_fd, (char *)page.data(), PAGE_SIZE, id * PAGE_SIZE);
+}
+
+bool FileManager::writePage(u32 id, const Page &page) {
+  ssize_t bytes_write = pwrite(this->file_fd, (const char *)page.data(),
+                               PAGE_SIZE, id * PAGE_SIZE);
+
+  if (bytes_write < PAGE_SIZE) {
+    return false;
+  }
+
+  return true;
+}

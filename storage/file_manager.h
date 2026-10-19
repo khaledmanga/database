@@ -1,5 +1,6 @@
 #pragma once
 
+#include "include/common.h"
 #include <fcntl.h>
 #include <unistd.h>
 
@@ -17,4 +18,6 @@ public:
   static FileManager *getInstance();
   void readFile(void *data, size_t size);
   void writeFile(const void *data, size_t size);
+  bool writePage(u32 id, const Page &page);
+  Page readPage(u32 id);
 };
