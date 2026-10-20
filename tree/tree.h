@@ -1,5 +1,7 @@
 #pragma once
 
+#include "include/common.h"
+
 class Metadata {
     public:
         u64 root_page_id;
@@ -11,5 +13,5 @@ class Metadata {
 
 void insert(const BPlusTree &blt);
 void update(const BPlusTree &blt);
-BPlusTree search();
+*BPlusTree search(const KV &kv);
 Metadata readMetadata();
