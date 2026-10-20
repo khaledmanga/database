@@ -10,7 +10,24 @@ Metadata readMetadata() {
     return metadata;
 }
 
-*BPlusTree search(const KV &kv) {
+bool update(const KV& kv) {
+    BPlusTree *bpt = search(kv);
+    
+    if(!bpt) {
+        return nullptr;
+    }
+      
+    for(int i = 0; i < bpt->KVs.size(); ++i) {
+        if(bpt->KVs[i].key == kv.key) {
+            bpt->KVS[i].value = kv.value;
+            return true;
+        }
+    }
+    
+    return false;
+}
+
+BPlusTree *search(const KV &kv) {
     Metadata metadata = readMetadata().decode();
     Page page{};
     BPlusTree *bpt = new BPlusTree();

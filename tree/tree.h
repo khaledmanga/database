@@ -11,7 +11,7 @@ class Metadata {
         void decode(const Page& page);
 };
 
-void insert(const BPlusTree &blt);
-void update(const BPlusTree &blt);
-*BPlusTree search(const KV &kv);
+bool insert(const KV& kv);
+bool update(const KV& kv);
+BPlusTree *search(const KV &kv);
 Metadata readMetadata();
