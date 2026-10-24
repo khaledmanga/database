@@ -1,16 +1,19 @@
-// #pragma once
+#pragma once
 
-// #include "bplustree/bplustree.h"
-// #include "include/common.h"
-// #include "metadata/metadata.h"
+#include "bplustree/bplustree.h"
+#include "include/common.h"
+#include "metadata/metadata.h"
+#include "storage/file_manager.h"
 
-// #include <algorithm>
+#include <algorithm>
 
-// struct SplitProperty {
-//   bool split = false;
-//   std::vector<u16> promotedKey;
-//   u64 rightPageId = 0;
+struct SplitProperty {
+  bool split = false;
+  std::vector<u16> promotedKey;
+  u64 rightPageId = 0;
+};
 
-//   SplitProperty() = default;
-//   SplitProperty(const std::vector<u16> &key, u64 rightId) : split(true), promotedKey(key), rightPageId(rightId) {}
-// };
+BPlusTree *search(const KV &kv, u64 &pageId);
+bool update(const KV &kv);
+void insert(const KV &kv);
+SplitProperty insertRecursive(BPlusTree &bpt, u64 pageId, const KV &kv);

@@ -3,22 +3,20 @@
 #include "include/common.h"
 #include <vector>
 
-class KV {
-public:
+struct KV {
   std::vector<u16> key;
   std::vector<u16> value;
 };
 
-class BPlusTree {
-private:
+struct BPlusTree {
   u16 types;
   u16 nkeys;
   std::vector<u64> pointers;
   std::vector<u16> offset;
   std::vector<KV> KVs;
 
-public:
-  Page encode();
-  void decode(const Page &page);
   void update_offset();
 };
+
+Page encodeBPlusTree(const BPlusTree &bpt);
+BPlusTree decodeBPlusTree(const Page &page);

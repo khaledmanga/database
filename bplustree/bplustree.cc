@@ -1,92 +1,93 @@
 #include "bplustree.h"
 
-Page BPlusTree::encode() {
+Page encodeBPlusTree(const BPlusTree &bpt) {
   Page page(PAGE_SIZE, 0);
 
   int offset = 0;
-  page[offset++] = (u8)(this->types & 0xFF);
-  page[offset++] = (u8)(this->types >> 8 & 0xFF);
+  page[offset++] = (u8)(bpt.types & 0xFF);
+  page[offset++] = (u8)(bpt.types >> 8 & 0xFF);
 
-  page[offset++] = (u8)(this->nkeys & 0xFF);
-  page[offset++] = (u8)(this->nkeys >> 8 & 0xFF);
+  page[offset++] = (u8)(bpt.nkeys & 0xFF);
+  page[offset++] = (u8)(bpt.nkeys >> 8 & 0xFF);
 
-  for (size_t i = 0; this->pointers.size(); ++i) {
-    page[offset++] = (u8)(this->pointers[i] & 0xFF);
-    page[offset++] = (u8)(this->pointers[i] >> 8 & 0xFF);
-    page[offset++] = (u8)(this->pointers[i] >> 16 & 0xFF);
-    page[offset++] = (u8)(this->pointers[i] >> 24 & 0xFF);
-    page[offset++] = (u8)(this->pointers[i] >> 32 & 0xFF);
-    page[offset++] = (u8)(this->pointers[i] >> 40 & 0xFF);
-    page[offset++] = (u8)(this->pointers[i] >> 48 & 0xFF);
-    page[offset++] = (u8)(this->pointers[i] >> 56 & 0xFF);
+  for (size_t i = 0; i < bpt.pointers.size(); ++i) {
+    page[offset++] = (u8)(bpt.pointers[i] & 0xFF);
+    page[offset++] = (u8)(bpt.pointers[i] >> 8 & 0xFF);
+    page[offset++] = (u8)(bpt.pointers[i] >> 16 & 0xFF);
+    page[offset++] = (u8)(bpt.pointers[i] >> 24 & 0xFF);
+    page[offset++] = (u8)(bpt.pointers[i] >> 32 & 0xFF);
+    page[offset++] = (u8)(bpt.pointers[i] >> 40 & 0xFF);
+    page[offset++] = (u8)(bpt.pointers[i] >> 48 & 0xFF);
+    page[offset++] = (u8)(bpt.pointers[i] >> 56 & 0xFF);
   }
 
-  for (size_t i = 0; this->offset.size(); ++i) {
-    page[offset++] = (u8)(this->offset[i] & 0xFF);
-    page[offset++] = (u8)(this->offset[i] >> 8 & 0xFF);
+  for (size_t i = 0; i < bpt.offset.size(); ++i) {
+    page[offset++] = (u8)(bpt.offset[i] & 0xFF);
+    page[offset++] = (u8)(bpt.offset[i] >> 8 & 0xFF);
   }
 
-  for (size_t i = 0; i < this->KVs.size(); ++i) {
-    page[offset++] = (u8)(this->KVs[i].key.size() & 0xFF);
-    page[offset++] = (u8)(this->KVs[i].key.size() >> 8 & 0xFF);
-    page[offset++] = (u8)(this->KVs[i].value.size() & 0xFF);
-    page[offset++] = (u8)(this->KVs[i].value.size() >> 8 & 0xFF);
+  for (size_t i = 0; i < bpt.KVs.size(); ++i) {
+    page[offset++] = (u8)(bpt.KVs[i].key.size() & 0xFF);
+    page[offset++] = (u8)(bpt.KVs[i].key.size() >> 8 & 0xFF);
+    page[offset++] = (u8)(bpt.KVs[i].value.size() & 0xFF);
+    page[offset++] = (u8)(bpt.KVs[i].value.size() >> 8 & 0xFF);
 
-    for (size_t i = 0; i < this->KVs[i].key.size(); ++i) {
-      page[offset++] = (u8)(this->KVs[i].key[i] & 0xFF);
-      page[offset++] = (u8)(this->KVs[i].key[i] >> 8 & 0xFF);
+    for (size_t j = 0; j < bpt.KVs[i].key.size(); ++j) {
+      page[offset++] = (u8)(bpt.KVs[i].key[j] & 0xFF);
+      page[offset++] = (u8)(bpt.KVs[i].key[j] >> 8 & 0xFF);
     }
 
-    for (size_t i = 0; i < this->KVs[i].value.size(); ++i) {
-      page[offset++] = (u8)(this->KVs[i].value[i] & 0xFF);
-      page[offset++] = (u8)(this->KVs[i].value[i] >> 8 & 0xFF);
+    for (size_t j = 0; j < bpt.KVs[i].value.size(); ++j) {
+      page[offset++] = (u8)(bpt.KVs[i].value[j] & 0xFF);
+      page[offset++] = (u8)(bpt.KVs[i].value[j] >> 8 & 0xFF);
     }
   }
 
   return page;
 }
 
-void BPlusTree::decode(const Page &page) {
+BPlusTree decodeBPlusTree(const Page &page) {
   int offset = 0;
+  BPlusTree bpt;
 
-  this->types = ((u16)(page[offset + 1]) << 8) | (u16)page[offset];
+  bpt.types = ((u16)(page[offset + 1]) << 8) | (u16)page[offset];
   offset += 2;
 
-  this->nkeys = ((u16)(page[offset + 1]) << 8) | (u16)page[offset];
+  bpt.nkeys = ((u16)(page[offset + 1]) << 8) | (u16)page[offset];
   offset += 2;
 
   size_t ptr_nums = 0;
-  if ((BNodeType)this->types != BNodeType::LEAF) {
-    ptr_nums = this->nkeys + 1;
+  if ((BNodeType)bpt.types != BNodeType::LEAF) {
+    ptr_nums = bpt.nkeys + 1;
   }
 
   for (size_t i = 0; i < ptr_nums; ++i) {
     u64 ptr = 0;
 
-    ptr |= (u64)page[offset] << 56;
-    ptr |= (u64)page[offset + 1] << 48;
-    ptr |= (u64)page[offset + 2] << 40;
-    ptr |= (u64)page[offset + 3] << 32;
-    ptr |= (u64)page[offset + 4] << 24;
-    ptr |= (u64)page[offset + 5] << 16;
-    ptr |= (u64)page[offset + 6] << 8;
-    ptr |= (u64)page[offset + 7];
-    this->pointers.push_back(ptr);
+    ptr |= (u64)page[offset];
+    ptr |= (u64)page[offset + 1] << 8;
+    ptr |= (u64)page[offset + 2] << 16;
+    ptr |= (u64)page[offset + 3] << 24;
+    ptr |= (u64)page[offset + 4] << 32;
+    ptr |= (u64)page[offset + 5] << 40;
+    ptr |= (u64)page[offset + 6] << 48;
+    ptr |= (u64)page[offset + 7] << 56;
+    bpt.pointers.push_back(ptr);
 
     offset += 8;
   }
 
-  for (u16 i = 0; i < this->nkeys; ++i) {
-    u16 offset = 0;
+  for (u16 i = 0; i < bpt.nkeys; ++i) {
+    u16 value = 0;
 
-    offset |= (u16)page[offset + 1] << 8;
-    offset |= (u16)page[offset];
+    value |= (u16)page[offset + 1] << 8;
+    value |= (u16)page[offset];
 
-    this->offset.push_back(offset);
+    bpt.offset.push_back(value);
     offset += 2;
   }
 
-  for (size_t i = 0; i < this->KVs.size(); ++i) {
+  for (size_t i = 0; i < bpt.nkeys; ++i) {
     u16 key_size = (u16)page[offset + 1] << 8 | (u16)page[offset];
     offset += 2;
 
@@ -105,22 +106,24 @@ void BPlusTree::decode(const Page &page) {
       offset += 2;
     }
 
-    this->KVs.push_back(kv);
+    bpt.KVs.push_back(kv);
   }
+
+  return bpt;
 }
 
 void BPlusTree::update_offset() {
-  this->nkeys = (u16)(this->KVs.size());
-  this->offset.clear();
+  nkeys = (u16)(KVs.size());
+  offset.clear();
 
-  if (this->nkeys == 0) {
+  if (nkeys == 0) {
     return;
   }
 
-  this->offset.resize(this->nkeys);
-  this->offset[0] = 4 + this->pointers.size() * 8 + this->nkeys * 4;
+  offset.resize(nkeys);
+  offset[0] = 4 + pointers.size() * 8 + nkeys * 2;
 
-  for (int i = 1; i < this->nkeys; ++i) {
-    this->offset[i] = this->offset[i - 1] + 4 + this->KVs[i - 1].key.size() + this->KVs[i - 1].value.size();
+  for (int i = 1; i < nkeys; ++i) {
+    offset[i] = offset[i - 1] + 4 + KVs[i - 1].key.size() * 2 + KVs[i - 1].value.size() * 2;
   }
 }

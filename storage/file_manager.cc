@@ -56,9 +56,19 @@ bool FileManager::writePage(u32 id, const Page &page) {
 }
 
 u64 FileManager::allocatePage() {
-  Metadata::getInstance();
-  u64 next_page_id = Metadata::getInstance().getNextPageId();
-  Metadata::getInstance().updateNextPageId();
+  Metadata metadata = decodeMetadata(this->readPage(0));
+  u64 next_page_id = metadata.next_page_id;
+  metadata.updateNextPageId();
 
   return next_page_id;
+}
+
+Metadata FileManager::readMetadata() { return decodeMetadata(this->readPage(0)); }
+
+bool FileManager::writeMetadata(const Metadata &metadata) {
+  if (!this->writePage(0, encodeMetadata(metadata))) {
+    return false;
+  }
+
+  return true;
 }

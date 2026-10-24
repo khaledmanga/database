@@ -23,5 +23,9 @@ public:
 
   bool writePage(u32 id, const Page &page);
   Page readPage(u32 id);
+
+  Metadata readMetadata();
+  bool writeMetadata(const Metadata &metadata);
+
   u64 allocatePage();
 };
