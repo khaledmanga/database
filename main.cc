@@ -1,3 +1,7 @@
+#include "init.h"
+#include <iostream>
+
 int main() {
-    return 0;
+  initDatabase();
+  return 0;
 }

@@ -1,17 +1,16 @@
-#pragma once
+// #pragma once
 
-#include "include/common.h"
+// #include "bplustree/bplustree.h"
+// #include "include/common.h"
+// #include "metadata/metadata.h"
 
-class Metadata {
-    public:
-        u64 root_page_id;
-        u64 next_page_id;
-        
-        Page encode();
-        void decode(const Page& page);
-};
+// #include <algorithm>
 
-bool insert(const KV& kv);
-bool update(const KV& kv);
-BPlusTree *search(const KV &kv);
-Metadata readMetadata();
+// struct SplitProperty {
+//   bool split = false;
+//   std::vector<u16> promotedKey;
+//   u64 rightPageId = 0;
+
+//   SplitProperty() = default;
+//   SplitProperty(const std::vector<u16> &key, u64 rightId) : split(true), promotedKey(key), rightPageId(rightId) {}
+// };

@@ -4,9 +4,9 @@
 #include <vector>
 
 class KV {
-  public:
-    std::vector<u16> key;
-    std::vector<u16> value;
+public:
+  std::vector<u16> key;
+  std::vector<u16> value;
 };
 
 class BPlusTree {
