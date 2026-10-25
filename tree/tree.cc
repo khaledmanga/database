@@ -69,22 +69,22 @@ void insert(const KV &kv) {
   SplitProperty sp = insertRecursive(rootNode, rootId, kv);
 
   if (sp.split) {
-  BPlusTree newRoot;
-  newRoot.types = (u16)BNodeType::INTERNAL;
-  newRoot.KVs = {KV{sp.promotedKey, {}}};
-  newRoot.pointers = {rootId, sp.rightPageId};
-  newRoot.nkeys = 1;
-  newRoot.update_offset();
+    BPlusTree newRoot;
+    newRoot.types = (u16)BNodeType::INTERNAL;
+    newRoot.KVs = {KV{sp.promotedKey, {}}};
+    newRoot.pointers = {rootId, sp.rightPageId};
+    newRoot.nkeys = 1;
+    newRoot.update_offset();
 
-  metadata = FileManager::getInstance().readMetadata();  
-  u64 new_page_id = metadata.next_page_id;
+    metadata = FileManager::getInstance().readMetadata();
+    u64 new_page_id = metadata.next_page_id;
 
-  FileManager::getInstance().writePage(new_page_id, encodeBPlusTree(newRoot));
+    FileManager::getInstance().writePage(new_page_id, encodeBPlusTree(newRoot));
 
-  metadata.root_page_id = new_page_id;   
-  metadata.next_page_id += 1;         
-  FileManager::getInstance().writePage(0, encodeMetadata(metadata));
-}
+    metadata.root_page_id = new_page_id;
+    metadata.next_page_id += 1;
+    FileManager::getInstance().writePage(0, encodeMetadata(metadata));
+  }
 }
 
 SplitProperty insertRecursive(BPlusTree &bpt, u64 pageId, const KV &kv) {
