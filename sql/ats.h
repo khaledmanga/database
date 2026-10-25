@@ -2,6 +2,7 @@
 
 #include <string>
 #include <variant>
+#include <vector>
 
 struct InsertStatement {
   std::string table;
@@ -9,4 +10,4 @@ struct InsertStatement {
   std::vector<std::string> values;
 };
 
-using Statment = std::variant<InsertStatement>;
+using Statement = std::variant<InsertStatement>;

@@ -9,10 +9,12 @@ bool isValidSyntax(const std::vector<Token> &tokens) {
     if (pos >= tokens.size() || tokens[pos].first != TokenType::INTO) {
       return false;
     }
+    ++pos;
 
     if (pos >= tokens.size() || tokens[pos].first != TokenType::IDENTIFIER) {
       return false;
     }
+    ++pos;
 
     if (tokens[pos].first == TokenType::LEFT_PAREN) {
       ++pos;
@@ -63,11 +65,15 @@ bool isValidSyntax(const std::vector<Token> &tokens) {
       return false;
     }
   }
+
+  return true;
 }
 
-*Statement convertToATS(const std::vector<Token> &tokens) {
+Statement *convertToATS(const std::vector<Token> &tokens) {
+  size_t pos = 0;
+
   if (tokens[pos].first == TokenType::INSERT) {
-    Statement insertStatement;
+    InsertStatement insertStatement;
 
     size_t pos = 2;
 
@@ -84,9 +90,9 @@ bool isValidSyntax(const std::vector<Token> &tokens) {
       }
     }
 
-    pos += 2;
+    pos += 3;
 
-    while (pos < tokens.size() && tokens[pos].first != TokenType::RIGHT_PAREN) {
+    while (pos < tokens.size() && tokens[pos].first != TokenType::RIGHT_PAREN) { 
       insertStatement.values.push_back(tokens[pos].second);
 
       ++pos;
@@ -95,5 +101,9 @@ bool isValidSyntax(const std::vector<Token> &tokens) {
         ++pos;
       }
     }
+
+    return new Statement(insertStatement);
   }
+
+  return nullptr;
 }
