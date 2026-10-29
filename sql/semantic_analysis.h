@@ -1,6 +1,4 @@
-#pragma once
+#include "schema.h"
+#include "catalog.h"
 
-bool isTableExist(const struct &TableSchema) {
-
-}
-
+bool validateStatement(const Catalog &catalog, const TableSchema &table_schema);
