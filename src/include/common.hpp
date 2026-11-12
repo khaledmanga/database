@@ -1,22 +1,22 @@
 #ifndef INCLUDE_COMMON_HPP
-#define
+#define INCLUDE_COMMON_HPP
 
 #include <cstdint>
 #include <vector>
 
-#define std::uint8_t u8
-#define std::uint16_t u16
-#define std::uint32_t u32
-#define std::uint64_t u64
+using u8 = std::uint8_t;
+using u16 = std::uint16_t;
+using u32 = std::uint32_t;
+using u64 = std::uint64_t;
 
 using Page = std::vector<u8>;
 
-const PAGE_SIZE = 4096;
+inline constexpr std::size_t PAGE_SIZE = 4096;
 
-enum class BNodeType {
-    ROOT,
-    INTERNAL,
-    LEAF,
+enum class BNodeType : u16 {
+    ROOT = 0,
+    INTERNAL = 1,
+    LEAF = 2,
 };
 
 #endif

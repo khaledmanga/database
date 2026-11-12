@@ -1,12 +1,12 @@
 #ifndef BPLUSTREE_BPLUSTREE_HPP
-#define
+#define BPLUSTREE_BPLUSTREE_HPP
 
-#include <inlcude/common.h>
+#include "include/common.hpp"
 #include <vector>
 
 struct KV {
-    std::vector<u16> key;
-    std::vector<u16> value;
+    std::vector<u8> key;
+    std::vector<u8> value;
 };
 
 struct BPlusTree {
@@ -19,5 +19,6 @@ struct BPlusTree {
 
 Page convertBPlusTreeToPage(const BPlusTree& bplustree);
 BPlusTree convertPageToBPlusTree(const Page& page);
+void update_offset(const BPlusTree& bplustree);
 
 #endif
