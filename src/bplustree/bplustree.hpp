@@ -19,6 +19,6 @@ struct BPlusTree {
 
 Page convertBPlusTreeToPage(const BPlusTree& bplustree);
 BPlusTree convertPageToBPlusTree(const Page& page);
-void update_offset(const BPlusTree& bplustree);
+void update_offset(BPlusTree& bplustree);
 
 #endif

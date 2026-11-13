@@ -104,3 +104,17 @@ BPlusTree convertPageToBPlusTree(const Page& page) {
 
     return bpt;
 }
+
+void update_offset(BPlusTree& node) {
+    node.offset.clear();
+    if (node.nkeys == 0) return;
+
+    u16 current_offset = 4 + node.pointers.size() * 8 + node.nkeys * 2;
+    node.offset.push_back(current_offset);
+
+    for (u16 i = 1; i < node.nkeys; ++i) {
+        u16 prev_kv_size = 4 + node.KV[i - 1].key.size() + node.KV[i - 1].value.size();
+        current_offset += prev_kv_size;
+        node.offset.push_back(current_offset);
+    }
+}
