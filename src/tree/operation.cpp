@@ -48,7 +48,7 @@ RecursiveInsert splitInternal(u8 page_id, struct BPlusTree &bpt) {
   return {allocated_page_id, separator_key};
 }
 
-void insert(u8& root_page_id, const KV &kv) {
+void insert(u8 &root_page_id, const KV &kv) {
   BPlusTree bpt = convertPageToBPlusTree(readPage(root_page_id));
   RecursiveInsert ri = insertRecursive(root_page_id, kv);
 
