@@ -14,9 +14,11 @@ using Page = std::vector<u8>;
 inline constexpr std::size_t PAGE_SIZE = 4096;
 
 enum class BNodeType : u16 {
-    ROOT = 0,
-    INTERNAL = 1,
-    LEAF = 2,
+  ROOT = 0,
+  INTERNAL = 1,
+  LEAF = 2,
 };
+
+inline constexpr u16 MAX_KEYS = 216;
 
 #endif
